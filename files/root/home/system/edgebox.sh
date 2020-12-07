@@ -44,6 +44,9 @@ while [ $# -gt 0 ] ; do
         cd sysctl
         echo "----> Updating Sysctl"
         git pull
+        cd ../ws
+        echo "----> Updating WS"
+        git pull
         cd ../api
         echo "----> Updating API"
         git pull
@@ -51,6 +54,9 @@ while [ $# -gt 0 ] ; do
         echo "----> Updating Assets"
         git pull
         cd /home/system
+        echo "----> Restarting Services"
+        cd ws
+        docker-compose restart
         ;;
     -s|--setup)
         setup=1
@@ -71,6 +77,10 @@ while [ $# -gt 0 ] ; do
         cd /home/system/components
         git clone https://github.com/edgebox-iot/sysctl.git
         echo ""
+        echo "----> Settting up edgebox-iot/ws"
+        echo ""
+        git clone https://github.com/edgebox-iot/ws.git
+        echo ""
         echo "----> Settting up edgebox-iot/api"
         echo ""
         git clone https://github.com/edgebox-iot/api.git
@@ -78,11 +88,18 @@ while [ $# -gt 0 ] ; do
         echo "----> Setting up edgebox-iot/assets"
         echo ""
         git clone https://github.com/edgebox-iot/assets.git	
-	echo ""
-	echo "---------------------------"
-	echo "| Edgebox Setup Finished  |"
-	echo "---------------------------"
-	echo ""
+        echo ""
+        echo "----> Starting Reverse Proxy and Service Containers"
+        echo ""
+        cd ws
+        docker-compose up -d
+        echo ""
+        
+        echo ""
+        echo "---------------------------"
+        echo "| Edgebox Setup Finished  |"
+        echo "---------------------------"
+        echo ""
         ;;
     -o|--output)
         output="$2"
