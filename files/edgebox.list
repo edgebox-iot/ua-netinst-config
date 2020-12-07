@@ -1,0 +1,2 @@
+system:system 755 /home/system/.edgebox_motd
+system:system 757 /home/system/edgebox.sh

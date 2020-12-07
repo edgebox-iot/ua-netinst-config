@@ -1,0 +1,3 @@
+echo "-> EdgeboxOS Components"
+mv /rootfs/home/system/.edgebox_motd /rootfs/etc/motd
+mv /rootfs/home/system/edgebox.sh /rootfs/usr/local/bin/edgebox

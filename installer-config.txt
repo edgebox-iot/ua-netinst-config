@@ -1,0 +1,34 @@
+# To customize the raspberrypi-unattended-installer:
+#
+# Place your settings in this file as described in the README.md or in the advanced documentation.
+
+packages=vim,aptitude,nano,curl,git,libffi-dev,libssl-dev,python3,python3-pip
+firmware_packages=1
+
+timezone=DE
+keyboard_layout=de
+system_default_locale=en_US
+
+username=system
+userpw=pw
+userperms_admin=1
+usergpu=1
+usersysgroups=docker
+
+rootpw=edgeboxroot
+root_ssh_pwlogin=1
+
+gpu_mem=32
+
+hostname=edgebox
+
+# Uncomment and fill to allow unnatended install via wifi
+# ifname=wlan0
+# wlan_country=DE
+# wlan_ssid='YOUR SSID HERE'
+# wlan_psk=your_password_here
+
+boot_volume_label=edgeboxBoot
+root_volume_label=edgeboxOS
+
+disable_raspberries=1
