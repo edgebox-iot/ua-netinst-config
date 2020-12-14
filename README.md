@@ -18,6 +18,8 @@ The installer with the default settings configures eth0 with DHCP to get interne
 - `/tmp` is mounted as tmpfs to improve speed
 - no clutter included, you only get the bare essential packages
 - option to install root to a USB drive
+- Contains a script in ~/home/system to allows automatic setup of the Edgebox repositories
+- Allows setting up an ssh key for GitHub for credentialless setup (see below) 
 
 ## Requirements
 
@@ -28,7 +30,10 @@ The installer with the default settings configures eth0 with DHCP to get interne
 ## Install instructions
 
 1. Write the installer to the SD card
-1. Insert this repo's config files in the proper folder
+2. Insert this repo's config files in the proper folder
+3. Copy installer-config.example.txt to installer-config.txt
+4. Tweak your installation options
+5. Optionally setup a GitHub SSH key in forehand for credentialless setup
 1. Power on the Edgebox and wait until the installation is done
 
 ## Writing the installer to the SD card
@@ -104,7 +109,9 @@ More advanced customization as providing files or executing own scripts is docum
 The system is almost completely unconfigured on first boot. Here are some tasks you most definitely want to do on first boot.  
 Note, that this manual work can be done automatically during the installation process if the appropriate options in [`installer-config.txt`](#installer-customization)) are set.
 
-The default **root** password is **raspbian**.
+Some sane defaults for Edgebox product development are pre-set, but you might want to tweak some of the parameters.
+
+The default **root** password is **edgebox-root**.
 
 - Set new root password: `passwd`
 - Configure your default locale: `dpkg-reconfigure locales`
@@ -113,6 +120,37 @@ The default **root** password is **raspbian**.
 
 Optional:  
 Create a swap file with `dd if=/dev/zero of=/swap bs=1M count=512 && chmod 600 /swap && mkswap /swap` (example is 512MB) and enable it on boot by appending `/swap none swap sw 0 0` to `/etc/fstab`.  
+
+## The edgebox setup script
+
+Included after installation in `~/home/system/` is a basg script with the name `edgebox.sh`. This script can be ran after installation to setup the necessary components for a proper functioning Edgebox. It can be run anywhere in a terminal as it is pre-included in the PATH.
+
+The recommendation is that after installation, you should run the setup script. The system is SSH accessible through `ssh system@edgebox`, using the password set on the `installer-config.txt` file.
+
+The available commands are:
+
+ - edgebox -s | --setup -> Setup script, configures GitHub SSH Key (if it exists), and downloads all repositories and starts all components. Project files are available at `~/home/system/components` >
+ - edgebox -u | --update -> Pulls all newest commits form every repository in the project.
+
+## GitHub Key Setup
+
+When running the setup scirpt, it will try to find a private ssh key in `~/home/system/.ssh/` called `github_key`.
+
+If it exists, it will automatically setup ssh to use this key when pulling repositories from GitHub, avoiding you having to insert credentials to clone / pull / push to repositories.
+
+To learn how to properly generate a GitHub SSH key for using here, please refer to [GitHub's documentation on how to generate a new SSH key](https://docs.github.com/en/free-pro-team@latest/github/authenticating-to-github/generating-a-new-ssh-key-and-adding-it-to-the-ssh-agent#generating-a-new-ssh-key). The step of "Adding your SSH key to the ssh-agent" is taken care by the setup command `edgebox -s`. So in steps, before copying the files to the SD card, do the following:
+
+ - $ ssh-keygen -t ed25519 -C "your_email@example.com"
+ - Press Enter 2 Times
+ - mv github_* ~/[THIS REPO PATH]/files/root/home/system/.ssh/
+ - Create the file ssh.list in ~/[THIS REPO PATH]/files/
+ - Insert in the ssh.list file, the following 2 lines: 
+ 
+        system:system 755 /home/system/.ssh/github_key
+        system:system 755 /home/system/.ssh/github_key.pub
+ - Make sure you've added the public key in your GitHub settings. [Check here how to do it](https://docs.github.com/en/free-pro-team@latest/github/authenticating-to-github/adding-a-new-ssh-key-to-your-github-account).
+
+For easing development, the setup script also sets up [credential caching in Git for GitHub](https://docs.github.com/en/free-pro-team@latest/github/using-git/caching-your-github-credentials-in-git), which in the case of not using an SSH key setup, allows to insert your GitHub credentials only once on the command `edgebox -s`, for it to be able to download all the repositories necessary.
 
 ## Logging
 

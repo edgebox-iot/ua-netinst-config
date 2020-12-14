@@ -60,6 +60,18 @@ while [ $# -gt 0 ] ; do
         ;;
     -s|--setup)
         setup=1
+        key_name="github_key"
+        pubkey_name="github_key.pub"
+        key_found=0
+        for f in ~/.ssh/ ; do
+            FILE="$key_name"
+            if test -f "$FILE"; then
+                key_found=1
+                echo "Setting up GitHub SSH key in ~/.ssh/$FILE"
+                eval "$(ssh-agent -s)"
+                ssh-add ~/.ssh/github_key
+            fi
+        done
         echo ""
         echo "--> Initializing Edgebox Setup Script"
         echo ""
@@ -74,27 +86,49 @@ while [ $# -gt 0 ] ; do
         echo "----> Setting up edgebox-iot/sysctl"
         echo ""
         mkdir /home/system/components
+        git config --global credential.helper cache # Set git to use the credential memory cache
+        git config --global credential.helper 'cache --timeout=3600' # Set the cache to timeout after 1 hour (setting is in seconds)
         cd /home/system/components
-        git clone https://github.com/edgebox-iot/sysctl.git
+        if [ $key_found != 0]; then
+            git clone git@github.com:edgebox-iot/api.git
+        else
+            git clone https://github.com/edgebox-iot/sysctl.git
+        fi
         echo ""
         echo "----> Settting up edgebox-iot/ws"
         echo ""
-        git clone https://github.com/edgebox-iot/ws.git
+        if [ $key_found != 0]; then
+            git clone git@github.com:edgebox-iot/ws.git
+        else
+            git clone https://github.com/edgebox-iot/ws.git
+        fi
         echo ""
         echo "----> Settting up edgebox-iot/api"
         echo ""
-        git clone https://github.com/edgebox-iot/api.git
+        if [ $key_found != 0]; then
+            git clone git@github.com:edgebox-iot/api.git
+        else
+            git clone https://github.com/edgebox-iot/api.git
+        fi
         echo ""
         echo "----> Setting up edgebox-iot/assets"
         echo ""
-        git clone https://github.com/edgebox-iot/assets.git	
+        if [ $key_found != 0]; then
+            git clone git@github.com:edgebox-iot/assets.git
+        else
+            git clone https://github.com/edgebox-iot/assets.git	
+        fi
         echo ""
-        echo "----> Starting Reverse Proxy and Service Containers"
+        echo "----> Building Reverse Proxy and Service Containers Configs"
         echo ""
         cd ws
-        docker-compose up -d
+        # docker-compose up -d
+        chmod 757 ws
+        ./ws -b
         echo ""
-        
+        echo "----> Starting Revere Proxy and Service Containers"
+        echo ""
+        ./ws -s
         echo ""
         echo "---------------------------"
         echo "| Edgebox Setup Finished  |"

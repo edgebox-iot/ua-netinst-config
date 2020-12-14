@@ -1,1 +1,3 @@
 installer-config.txt
+files/root/home/system/.ssh/*
+files/ssh.list
