@@ -2,7 +2,7 @@
 #
 # Place your settings in this file as described in the README.md or in the advanced documentation.
 
-packages=vim,aptitude,nano,curl,git,libffi-dev,libssl-dev,python3,python3-pip,samba,samba-common-bin
+packages=vim,aptitude,nano,curl,git,libffi-dev,libssl-dev,python3,python3-pip,samba,samba-common-bin,avahi-daemon,avahi-utils
 
 firmware_packages=1
 
