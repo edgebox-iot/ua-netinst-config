@@ -2,6 +2,8 @@
 
 A set of configurations for Edgebox base unattended install, to be used with [edgebox-iot/raspberrypi-ua-netinst](https://github.com/edgebox-iot/raspberrypi-ua-netinst)
 
+[TOC]
+
 The installer with the default settings configures eth0 with DHCP to get internet connectivity and completely wipes the SD card from any previous installation.
 
 ### Features
@@ -24,48 +26,39 @@ The installer with the default settings configures eth0 with DHCP to get interne
 ## Requirements
 
 - Intended for Edgebox Model 1 (Raspberry Pi 4B based), though it can be used with any Raspberry Pi (from model 1B up to 4B, 3A+, 3B+ or Zero including Zero W)
-- SD card with at least 1GB, or at least 128MB for USB root install (without customization)
+- SD card with at least 1GB, or at least 128MB for USB root install (without customization). We recommend at least 8GB for confortable operation.
 - ethernet or wireless LAN with a working internet connection
 
 ## Install instructions
 
+**Outline of the 6 steps necessary to install the project into a raspberry pi. Check the details for each one of the steps in the sub-chapters below.**
+
 1. Write the installer to the SD card
 2. Insert this repo's config files in the proper folder
-3. Copy installer-config.example.txt to installer-config.txt
-4. Tweak your installation options
-5. Optionally setup a GitHub SSH key in forehand for credentialless setup
-1. Power on the Edgebox and wait until the installation is done
+3. Copy `installer-config.example.txt` to `installer-config.txt`
+4. Tweak your installation options in the `installer-config.txt` file (See *Installer Costumization*)
+5. (Optionally) setup a GitHub SSH key in forehand for credentialless setup
+6. Power on the Edgebox and wait until the installation is done
 
-## Writing the installer to the SD card
+### Writing the installer to the SD card
 
-The installer archive contains all firmware files and the installer.
+- Go to [raspberrypi-ua-netinst latest release page](https://github.com/FooDeas/raspberrypi-ua-netinst/releases/latest) and download the latest version .zip file. This installer archive contains all firmware files and the base installer for the latest version of a stripped down version of Debian.
 
-Go to [raspberrypi-ua-netinst latest release page](https://github.com/FooDeas/raspberrypi-ua-netinst/releases/latest) and download the .zip file.
+- Format your SD card as **FAT32** (MS-DOS on _Mac OS X_) and extract the downloaded .zip file  directly into the SD Card.
 
-Format your SD card as **FAT32** (MS-DOS on _Mac OS X_) and extract the installer files.
+  *TIp: When formatting the SD card we recommend using the SD Cards manufacturer tool (if it exists), or as a more general all-around tool, Gparted. When creating new partitions for SD cards it is recommended that the preceding  space of the partition is set to 4MB* 
 
-Clone this repository or copy its file contents into the ``/raspberrypi-ua-netinst/config/`` directory.
+- Go to the folder ``/raspberrypi-ua-netinst/config/``  in the SD card.
+- Copy this repository contents into the folder.
 
-## Installing
-
-Under normal circumstances, you can just insert the SD card, power on your Edgebox and cross your fingers.
-
-If you don't have a display attached, you can monitor the ethernet card LEDs to guess the activity status. When it finally reboots after installing everything you will see them illuminate on and off a few times when Raspbian configures on boot.
-
-If the installation process fails, you will see **SOS** in Morse code (... --- ...) on an led.  In this case, power off the Pi and check the log on the sd card.
-
-If you do have a display, you can follow the progress and catch any possible errors in the default configuration or your own modifications. Once a network connection has been established, the process can also be followed via telnet (port 23).
-
-If you have a serial cable connected, installer output can be followed there, too. If 'console=tty1' at then end of the `cmdline.txt` file is removed, you have access to the console in case of problems.
-
-## Installer customization
+### Installer customization
 
 You can use the installer _as is_ and get a minimal system installed which you can then use and customize to your needs.
 
 **All configuration files and folders in this directory have to be placed in `raspberrypi-ua-netinst/config` on the SD card.**  
 This is the configuration directory of the installer.
 
-### Unattended install settings
+#### Unattended install settings
 
 The primary way to customize the installation process is done through a file named _installer-config.txt_.
 
@@ -100,9 +93,21 @@ gpu_mem=32
 
 All possible parameters and their description, are documented in [docs/INSTALL_CUSTOM.md](/docs/INSTALL_CUSTOM.md).
 
-### Advanced customization
+#### Advanced customization
 
 More advanced customization as providing files or executing own scripts is documented in [docs/INSTALL_ADVANCED.md](/docs/INSTALL_ADVANCED.md).
+
+## Installing
+
+Under normal circumstances, you can just insert the SD card, power on your Edgebox and cross your fingers.
+
+If you don't have a display attached, you can monitor the ethernet card LEDs to guess the activity status. When it finally reboots after installing everything you will see them illuminate on and off a few times when Raspbian configures on boot.
+
+If the installation process fails, you will see **SOS** in Morse code (... --- ...) on an led.  In this case, power off the Pi and check the log on the sd card.
+
+If you do have a display, you can follow the progress and catch any possible errors in the default configuration or your own modifications. Once a network connection has been established, the process can also be followed via telnet (port 23).
+
+If you have a serial cable connected, installer output can be followed there, too. If 'console=tty1' at then end of the `cmdline.txt` file is removed, you have access to the console in case of problems.
 
 ## First boot
 
@@ -145,7 +150,7 @@ To learn how to properly generate a GitHub SSH key for using here, please refer 
  - mv github_* ~/[THIS REPO PATH]/files/root/home/system/.ssh/
  - Create the file ssh.list in ~/[THIS REPO PATH]/files/
  - Insert in the ssh.list file, the following 2 lines: 
- 
+
         system:system 755 /home/system/.ssh/github_key
         system:system 755 /home/system/.ssh/github_key.pub
  - Make sure you've added the public key in your GitHub settings. [Check here how to do it](https://docs.github.com/en/free-pro-team@latest/github/authenticating-to-github/adding-a-new-ssh-key-to-your-github-account).
