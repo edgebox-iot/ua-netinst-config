@@ -83,6 +83,15 @@ while [ $# -gt 0 ] ; do
         echo ""
         sudo pip3 -v install docker-compose
         echo ""
+        echo "----> Installing Go:"
+        export GOLANG="$(curl https://golang.org/dl/|grep armv6l|grep -v beta|head -1|awk -F\> {'print $3'}|awk -F\< {'print $1'})"
+        wget https://golang.org/dl/$GOLANG
+        sudo tar -C /usr/local -xzf $GOLANG
+        rm $GOLANG
+        unset GOLANG
+        echo "" >> /home/system/.profile
+        echo "export PATH=\$PATH:/usr/local/go/bin" >> /home/system/.profile
+        echo ""
         echo "----> Setting up edgebox-iot/sysctl"
         echo ""
         mkdir /home/system/components
