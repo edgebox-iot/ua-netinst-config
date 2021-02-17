@@ -83,6 +83,10 @@ while [ $# -gt 0 ] ; do
         echo ""
         sudo pip3 -v install docker-compose
         echo ""
+        echo "----> Installing yq:"
+        echo ""
+        sudo pip3 -v install yq
+        echo ""
         echo "----> Installing Go:"
         export GOLANG="$(curl https://golang.org/dl/|grep armv6l|grep -v beta|head -1|awk -F\> {'print $3'}|awk -F\< {'print $1'})"
         wget https://golang.org/dl/$GOLANG
