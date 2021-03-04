@@ -96,16 +96,16 @@ while [ $# -gt 0 ] ; do
         echo "" >> /home/system/.profile
         echo "export PATH=\$PATH:/usr/local/go/bin" >> /home/system/.profile
         echo ""
-        echo "----> Setting up edgebox-iot/sysctl"
+        echo "----> Setting up edgebox-iot/edgeboxctl"
         echo ""
         mkdir /home/system/components
         git config --global credential.helper cache # Set git to use the credential memory cache
         git config --global credential.helper 'cache --timeout=3600' # Set the cache to timeout after 1 hour (setting is in seconds)
         cd /home/system/components
         if [ $key_found != 0]; then
-            git clone git@github.com:edgebox-iot/api.git
+            git clone git@github.com:edgebox-iot/edgeboxctl.git
         else
-            git clone https://github.com/edgebox-iot/sysctl.git
+            git clone https://github.com/edgebox-iot/edgeboxctl.git
         fi
         echo ""
         echo "----> Settting up edgebox-iot/ws"
@@ -131,6 +131,13 @@ while [ $# -gt 0 ] ; do
         else
             git clone https://github.com/edgebox-iot/assets.git	
         fi
+	echo ""
+	echo "----> Setting up edgebox-iot/apps"
+	if [ $key_found != 0]; then
+	    git clone git@github.com:edgebox-iot/apps.git
+	else
+	    git clone https://github.com/edgebox-iot/apps.git
+	fi
         echo ""
         echo "----> Building Reverse Proxy and Service Containers Configs"
         echo ""
