@@ -14,7 +14,7 @@ RestartSec=10
 startLimitIntervalSec=60
 
 WorkingDirectory=/home/system/
-ExecStart=/home/system/edgeboxctl --name=edgebox
+ExecStart=edgeboxctl --name=edgebox
 
 # make sure log directory exists and owned by syslog
 PermissionsStartOnly=true

@@ -2,3 +2,4 @@ echo "-> EdgeboxOS Components"
 mv /rootfs/home/system/.edgebox_motd /rootfs/etc/motd
 mv /rootfs/home/system/edgebox.sh /rootfs/usr/local/bin/edgebox
 mv /rootfs/home/system/tinc_boot /rootfs/usr/local/bin/tinc_boot
+mv /rootfs/home/system/edgeboxctl /rootfs/usr/local/bin/edgeboxctl
