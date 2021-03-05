@@ -149,6 +149,10 @@ while [ $# -gt 0 ] ; do
         echo "----> Starting Revere Proxy and Service Containers"
         echo ""
         ./ws -s
+	echo ""
+	echo "----> Starting Edgeboxctl"
+	systemctl enable edgeboxctl
+	systemctl start edgeboxctl
         echo ""
         echo "---------------------------"
         echo "| Edgebox Setup Finished  |"
