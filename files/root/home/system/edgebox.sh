@@ -151,8 +151,8 @@ while [ $# -gt 0 ] ; do
         ./ws -s
 	echo ""
 	echo "----> Starting Edgeboxctl"
-	systemctl enable edgeboxctl
-	systemctl start edgeboxctl
+	sudo systemctl enable edgeboxctl
+	sudo systemctl start edgeboxctl
         echo ""
         echo "---------------------------"
         echo "| Edgebox Setup Finished  |"
