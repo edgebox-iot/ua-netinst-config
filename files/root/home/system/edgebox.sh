@@ -41,8 +41,8 @@ while [ $# -gt 0 ] ; do
         echo "--> Updating Edgebox components"
         echo ""
         cd /home/system/components/
-        cd sysctl
-        echo "----> Updating Sysctl"
+        cd edgeboxctl
+        echo "----> Updating edgeboxctl"
         git pull
         cd ../ws
         echo "----> Updating WS"
@@ -144,6 +144,8 @@ while [ $# -gt 0 ] ; do
         cd ws
         # docker-compose up -d
         chmod 757 ws
+        mkdir appdata
+        sudo chmod -R 777 appdata/
         ./ws -b
         echo ""
         echo "----> Starting Revere Proxy and Service Containers"
