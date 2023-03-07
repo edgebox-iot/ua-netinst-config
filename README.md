@@ -29,8 +29,7 @@ This installer creates a image of all necessary firmware files and the base inst
 
 ### Formatting your SD card
 
-- Format your SD card as **FAT32** (MS-DOS on _Mac OS X_) and extract the downloaded .zip file  directly into the SD Card.
-
+- Format your SD card as **FAT32** (MS-DOS on _Mac OS X_)
   _Tip: When formatting the SD card we recommend using the SD Cards manufacturer tool (if it exists), or as a more general all-around tool, Gparted. When creating new partitions for SD cards it is recommended that the preceding  space of the partition is set to 4MB_
 
 ### Running the install script
