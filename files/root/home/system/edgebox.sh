@@ -88,7 +88,7 @@ while [ $# -gt 0 ] ; do
         sudo pip3 -v install yq
         echo ""
         echo "----> Installing Go:"
-        export GOLANG="$(curl https://golang.org/dl/|grep armv6l|grep -v beta|head -1|awk -F\> {'print $3'}|awk -F\< {'print $1'})"
+        export GOLANG="$(curl https://go.dev/dl/|grep armv6l|grep -v beta|head -1|awk -F\> {'print $3'}|awk -F\< {'print $1'})"
         wget https://golang.org/dl/$GOLANG
         sudo tar -C /usr/local -xzf $GOLANG
         rm $GOLANG
@@ -102,15 +102,15 @@ while [ $# -gt 0 ] ; do
         git config --global credential.helper cache # Set git to use the credential memory cache
         git config --global credential.helper 'cache --timeout=3600' # Set the cache to timeout after 1 hour (setting is in seconds)
         cd /home/system/components
-        if [ $key_found != 0]; then
+        if [ $key_found != 0 ]; then
             git clone git@github.com:edgebox-iot/edgeboxctl.git
         else
             git clone https://github.com/edgebox-iot/edgeboxctl.git
-        fi
+	fi
         echo ""
         echo "----> Settting up edgebox-iot/ws"
         echo ""
-        if [ $key_found != 0]; then
+        if [ $key_found != 0 ]; then
             git clone git@github.com:edgebox-iot/ws.git
         else
             git clone https://github.com/edgebox-iot/ws.git
@@ -118,20 +118,12 @@ while [ $# -gt 0 ] ; do
         echo ""
         echo "----> Settting up edgebox-iot/api"
         echo ""
-        if [ $key_found != 0]; then
+        if [ $key_found != 0 ]; then
             git clone git@github.com:edgebox-iot/api.git
         else
             git clone https://github.com/edgebox-iot/api.git
-        fi
+	fi
         echo ""
-        echo "----> Setting up edgebox-iot/assets"
-        echo ""
-        if [ $key_found != 0]; then
-            git clone git@github.com:edgebox-iot/assets.git
-        else
-            git clone https://github.com/edgebox-iot/assets.git	
-        fi
-	echo ""
 	echo "----> Setting up edgebox-iot/apps"
 	if [ $key_found != 0]; then
 	    git clone git@github.com:edgebox-iot/apps.git
