@@ -1,3 +1,6 @@
-installer-config.txt
-files/root/home/system/.ssh/*
-files/ssh.list
+# Ignore some of the stuff in the "files" directory (ssh configs that should be manually inserted by the user)
+config/files/root/home/system/.ssh/*
+config/files/ssh.list
+
+# Ignore the "image" directory
+image
