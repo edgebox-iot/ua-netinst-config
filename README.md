@@ -1,14 +1,17 @@
 # ua-netinst-config
 
 A set of configurations for Edgebox base unattended install, to be used with [edgebox-iot/raspberrypi-ua-netinst](https://github.com/edgebox-iot/raspberrypi-ua-netinst)
+This installer creates a image of all necessary firmware files and the base installer for the latest version of a stripped down version of Debian with the edgebox system installed inside it. 
 
-[TOC]
+## Requirements
 
-The installer with the default settings configures eth0 with DHCP to get internet connectivity and completely wipes the SD card from any previous installation.
+- Intended for Edgebox Model 1 (Raspberry Pi 4B based), though it can be used with any Raspberry Pi (from model 1B up to 4B, 3A+, 3B+ or Zero including Zero W)
+- SD card with at least 1GB, or at least 128MB for USB root install (without customization). We recommend at least 8GB for confortable operation.
+- ethernet or wireless LAN with a working internet connection
 
 ### Features
 
-- completely unattended, you only need a working internet connection through the ethernet port or use the onboard wireless LAN (supported on model 3B, 3B+, 4B and 0W)
+- Configures an operating system through unnatended installer, you only need a working internet connection through the ethernet port or use the onboard wireless LAN (supported on model 3B, 3B+, 4B and 0W)
 - DHCP and static IP configuration (DHCP is the default)
 - always installs the latest version of Raspbian
 - configurable default settings
@@ -21,53 +24,38 @@ The installer with the default settings configures eth0 with DHCP to get interne
 - no clutter included, you only get the bare essential packages
 - option to install root to a USB drive
 - Contains a script in ~/home/system to allows automatic setup of the Edgebox repositories
-- Allows setting up an ssh key for GitHub for credentialless setup (see below) 
-
-## Requirements
-
-- Intended for Edgebox Model 1 (Raspberry Pi 4B based), though it can be used with any Raspberry Pi (from model 1B up to 4B, 3A+, 3B+ or Zero including Zero W)
-- SD card with at least 1GB, or at least 128MB for USB root install (without customization). We recommend at least 8GB for confortable operation.
-- ethernet or wireless LAN with a working internet connection
 
 ## Install instructions
 
-**Outline of the 6 steps necessary to install the project into a raspberry pi. Check the details for each one of the steps in the sub-chapters below.**
-
-1. Write the installer to the SD card
-2. Insert this repo's config files in the proper folder
-3. Copy `installer-config.example.txt` to `installer-config.txt`
-4. Tweak your installation options in the `installer-config.txt` file (See *Installer Costumization*)
-5. (Optionally) setup a GitHub SSH key in forehand for credentialless setup
-6. Power on the Edgebox and wait until the installation is done
-
-### Writing the installer to the SD card
-
-- Go to [raspberrypi-ua-netinst latest release page](https://github.com/FooDeas/raspberrypi-ua-netinst/releases/latest) and download the latest version .zip file. This installer archive contains all firmware files and the base installer for the latest version of a stripped down version of Debian.
+### Formatting your SD card
 
 - Format your SD card as **FAT32** (MS-DOS on _Mac OS X_) and extract the downloaded .zip file  directly into the SD Card.
 
-  *TIp: When formatting the SD card we recommend using the SD Cards manufacturer tool (if it exists), or as a more general all-around tool, Gparted. When creating new partitions for SD cards it is recommended that the preceding  space of the partition is set to 4MB* 
+  _Tip: When formatting the SD card we recommend using the SD Cards manufacturer tool (if it exists), or as a more general all-around tool, Gparted. When creating new partitions for SD cards it is recommended that the preceding  space of the partition is set to 4MB_
 
-- Go to the folder ``/raspberrypi-ua-netinst/config/``  in the SD card.
-- Copy this repository contents into the folder.
+### Running the install script
+
+1. Run `make install`
+2. Answer the required questions
+3. After the installation is done, copy the contents of the "image" folder into the root of your SD card
+4. Insert the SD card on your Edgebox and wait until the installation is done
 
 ### Installer customization
 
 You can use the installer _as is_ and get a minimal system installed which you can then use and customize to your needs.
 
-**All configuration files and folders in this directory have to be placed in `raspberrypi-ua-netinst/config` on the SD card.**  
+**All advanced configuration files and folders should be placed in `image/config` after running the installation script.**  
 This is the configuration directory of the installer.
 
 #### Unattended install settings
 
-The primary way to customize the installation process is done through a file named _installer-config.txt_.
+The primary way to customize the installation process is done through the file `config/installer-config.txt`.
 
-If you want settings changed for your installation, you should **only** place that changed setting in the _installer-config.txt_ file. So if you want to have vim and aptitude installed by default, edit the _installer-config.txt_ file with the following contents:
+If you want settings changed for your installation, you should **only** place that changed setting in the `config/installer-config.txt` file. So for example if you want to have vim and aptitude installed by default, edit the file with the following contents:
 
 ```
 packages=vim,aptitude
 ```
-
 That's it!
 
 Here is another example for a _installer-config.txt_ file:
@@ -97,7 +85,7 @@ All possible parameters and their description, are documented in [docs/INSTALL_C
 
 More advanced customization as providing files or executing own scripts is documented in [docs/INSTALL_ADVANCED.md](/docs/INSTALL_ADVANCED.md).
 
-## Installing
+## Installing on Raspberry Pi
 
 Under normal circumstances, you can just insert the SD card, power on your Edgebox and cross your fingers.
 
