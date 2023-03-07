@@ -35,6 +35,8 @@ This installer creates a image of all necessary firmware files and the base inst
 
 ### Running the install script
 
+![Installer](example.gif)
+
 1. Run `make install`
 2. Answer the required questions
 3. After the installation is done, copy the contents of the "image" folder into the root of your SD card
