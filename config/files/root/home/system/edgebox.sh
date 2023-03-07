@@ -125,7 +125,7 @@ while [ $# -gt 0 ] ; do
 	fi
         echo ""
 	echo "----> Setting up edgebox-iot/apps"
-	if [ $key_found != 0]; then
+	if [ $key_found != 0 ]; then
 	    git clone git@github.com:edgebox-iot/apps.git
 	else
 	    git clone https://github.com/edgebox-iot/apps.git
