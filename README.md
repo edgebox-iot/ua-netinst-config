@@ -1,7 +1,8 @@
 # ua-netinst-config
 
-A set of configurations for Edgebox base unattended install, to be used with [edgebox-iot/raspberrypi-ua-netinst](https://github.com/edgebox-iot/raspberrypi-ua-netinst)
-This installer creates a image of all necessary firmware files and the base installer for the latest version of a stripped down version of Debian with the edgebox system installed inside it. 
+This installer asks some configuration questions and creates a image of all necessary firmware files and the base installer for the latest version of a stripped down version of Debian with the Edgebox system installed inside it.
+
+This uses [edgebox-iot/raspberrypi-ua-netinst](https://github.com/edgebox-iot/raspberrypi-ua-netinst).
 
 ## Requirements
 
@@ -52,7 +53,7 @@ This is the configuration directory of the installer.
 
 The primary way to customize the installation process is done through the file `config/installer-config.txt`.
 
-If you want settings changed for your installation, you should **only** place that changed setting in the `config/installer-config.txt` file. So for example if you want to have vim and aptitude installed by default, edit the file with the following contents:
+If you want settings changed for your installation, you should **only** place that changed setting in the `image/installer-config.txt` file, after running the `make install` command. So for example if you want to have vim and aptitude installed by default, edit the file with the following contents:
 
 ```
 packages=vim,aptitude
@@ -80,11 +81,11 @@ root_ssh_pwlogin=0
 gpu_mem=32
 ```
 
-All possible parameters and their description, are documented in [docs/INSTALL_CUSTOM.md](/docs/INSTALL_CUSTOM.md).
+All possible parameters and their description, are documented in [docs/INSTALL_CUSTOM.md on the raspberrypi-ua-netinst repository](https://github.com/edgebox-iot/raspberrypi-ua-netinst/blob/devel/doc/INSTALL_CUSTOM.md).
 
 #### Advanced customization
 
-More advanced customization as providing files or executing own scripts is documented in [docs/INSTALL_ADVANCED.md](/docs/INSTALL_ADVANCED.md).
+More advanced customization as providing files or executing own scripts is documented in [docs/INSTALL_ADVANCED.md](https://github.com/edgebox-iot/raspberrypi-ua-netinst/blob/devel/doc/INSTALL_ADVANCED.md).
 
 ## Installing on Raspberry Pi
 
@@ -103,11 +104,8 @@ If you have a serial cable connected, installer output can be followed there, to
 The system is almost completely unconfigured on first boot. Here are some tasks you most definitely want to do on first boot.  
 Note, that this manual work can be done automatically during the installation process if the appropriate options in [`installer-config.txt`](#installer-customization)) are set.
 
-Some sane defaults for Edgebox product development are pre-set, but you might want to tweak some of the parameters.
+Some sane defaults for Edgebox product development are pre-set via the installation script, but you might want to tweak some of the parameters even after installing.
 
-The default **root** password is **edgebox-root**.
-
-- Set new root password: `passwd`
 - Configure your default locale: `dpkg-reconfigure locales`
 - Configure your keyboard layout: `dpkg-reconfigure keyboard-configuration`
 - Configure your timezone: `dpkg-reconfigure tzdata`
@@ -134,15 +132,18 @@ If it exists, it will automatically setup ssh to use this key when pulling repos
 
 To learn how to properly generate a GitHub SSH key for using here, please refer to [GitHub's documentation on how to generate a new SSH key](https://docs.github.com/en/free-pro-team@latest/github/authenticating-to-github/generating-a-new-ssh-key-and-adding-it-to-the-ssh-agent#generating-a-new-ssh-key). The step of "Adding your SSH key to the ssh-agent" is taken care by the setup command `edgebox -s`. So in steps, before copying the files to the SD card, do the following:
 
- - $ ssh-keygen -t ed25519 -C "your_email@example.com"
- - Press Enter 2 Times
- - mv github_* ~/[THIS REPO PATH]/files/root/home/system/.ssh/
- - Create the file ssh.list in ~/[THIS REPO PATH]/files/
- - Insert in the ssh.list file, the following 2 lines: 
+- $ ssh-keygen -t ed25519 -C "your_email@example.com"
+- Press Enter 2 Times
+- mv github_* ~/[THIS REPO PATH]/files/root/home/system/.ssh/
+- Create the file ssh.list in ~/[THIS REPO PATH]/files/
+- Insert in the ssh.list file, the following 2 lines:
 
-        system:system 755 /home/system/.ssh/github_key
-        system:system 755 /home/system/.ssh/github_key.pub
- - Make sure you've added the public key in your GitHub settings. [Check here how to do it](https://docs.github.com/en/free-pro-team@latest/github/authenticating-to-github/adding-a-new-ssh-key-to-your-github-account).
+```
+system:system 755 /home/system/.ssh/github_key
+system:system 755 /home/system/.ssh/github_key.pub
+```
+
+- Make sure you've added the public key in your GitHub settings. [Check here how to do it](https://docs.github.com/en/free-pro-team@latest/github/authenticating-to-github/adding-a-new-ssh-key-to-your-github-account).
 
 For easing development, the setup script also sets up [credential caching in Git for GitHub](https://docs.github.com/en/free-pro-team@latest/github/using-git/caching-your-github-credentials-in-git), which in the case of not using an SSH key setup, allows to insert your GitHub credentials only once on the command `edgebox -s`, for it to be able to download all the repositories necessary.
 
@@ -156,9 +157,9 @@ When an error occurs during install, the logfile is placed in the `raspberrypi-u
 
 If you want to reinstall with the same settings you did your first install you can just move the original _config.txt_ back and reboot.
 
-```
+```bash
 mv /boot/raspberrypi-ua-netinst/reinstall/config.txt /boot/config.txt
 reboot
 ```
 
-**Remember to backup all your data and original `config.txt` before doing this!**
+**Remember to backup all your data and original `installer-config.txt` before doing this!**
