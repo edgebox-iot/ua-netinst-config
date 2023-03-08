@@ -1,20 +1,5 @@
 #!/bin/bash
 
-# Default values for the installer (when user selects no to override them)
-DEFAULT_HOSTNAME="edgebox"
-DEFAULT_TIMEZONE_COUNTRY_CODE="DE"
-DEFAULT_KEYBOARD_LAYOUT_COUNTRY_CODE="de"
-DEFAULT_LOCALE="en_US"
-RASPBERRYPI_UA_NETINST_RELEASE="v2.4.0_caf7423"
-RASPBERRYPI_UA_NETINST_RELEASE_URL="https://github.com/FooDeas/raspberrypi-ua-netinst/releases/download/v2.4.0_caf7423/raspberrypi-ua-netinst-git-caf7423.zip"
-
-# Var helpers
-EMPTY_LINE=""
-GREEN='\033[0;32m'  # Green color escape code
-NC='\033[0m'  # Reset color escape code
-USER_INSTALLER_CONFIG_LOCATION=./image/raspberrypi-ua-netinst/config/installer-config.txt
-
-# Print ASCII art using a here document
 cat << "EOF"
                                                      
 ,------.   ,--.              ,--.                    
@@ -25,6 +10,57 @@ cat << "EOF"
                `---'                                 
 EOF
 
+# Default Values
+DEFAULT_HOSTNAME="edgebox"
+DEFAULT_TIMEZONE_COUNTRY_CODE="DE"
+DEFAULT_KEYBOARD_LAYOUT_COUNTRY_CODE="de"
+DEFAULT_LOCALE="en_US"
+RASPBERRYPI_UA_NETINST_RELEASE="v2.4.0_caf7423"
+RASPBERRYPI_UA_NETINST_RELEASE_URL="https://github.com/FooDeas/raspberrypi-ua-netinst/releases/download/v2.4.0_caf7423/raspberrypi-ua-netinst-git-caf7423.zip"
+
+# Color Escape Codes
+GREEN='\033[0;32m'
+RED='\033[0;31m'
+YELLOW='\033[0;33m'
+BLUE='\033[0;34m'
+NC='\033[0m'
+
+# File Paths
+USER_INSTALLER_CONFIG_LOCATION=./image/raspberrypi-ua-netinst/config/installer-config.txt
+
+# Functions
+function print_success {
+    # Prints a message in green
+    echo -e "${GREEN}$1${NC}"
+}
+
+function print_error {
+    # Print a message in red
+    echo -e "${RED}$1${NC}"
+}
+
+function print_warning {
+    # Prints a message in yellow
+    echo -e "${YELLOW}$1${NC}"
+}
+
+function print_question {
+    # Prints a message in blue
+    echo -e "${BLUE}$1${NC}"
+}
+
+function get_yes_or_no() {
+    # Ask for a yes or no answer
+    # Keep attempting to read until a valid answer is given
+    local response
+    read response
+    while [[ ! $response =~ ^[yn]$ ]]; do
+        echo "Please enter y or n"
+        read response
+    done
+    echo $response
+}
+
 # Print a message
 echo "This process will ask you a couple of questions to setup..."
 echo "Press [ENTER] to continue..."
@@ -33,21 +69,15 @@ echo "Press [ENTER] to continue..."
 read
 
 # Ask for the root password
-echo "Please enter the root password for the system:"
+print_question "Type the root password for the system:"
 read -s root_password
-echo $EMPTY_LINE
+echo
 
 # Ask if root user should have SSH access
-echo "Should the root user have SSH access? (y/n):"
-read root_ssh
-echo $EMPTY_LINE
+print_question "Should the root user have SSH access? (y/n):"
+root_ssh=$(get_yes_or_no)
+echo
 
-# Validate if answer is y or n. If not, repeat
-while [[ $root_ssh != "y" && $root_ssh != "n" ]]; do
-    echo $EMPTY_LINE
-    echo "Please enter y or n"
-    read root_ssh
-done
 
 # Convert answer to 0 if n, 1 of y
 if [[ $root_ssh == "n" ]]; then
@@ -57,54 +87,40 @@ else
 fi
 
 # Ask for the user password
-echo "Please enter the password for the system user (sudo user):"
+print_question "Please enter the password for the system user (sudo user):"
 read -s user_password
-echo $EMPTY_LINE
+echo
 
 # Ask if user is going to use Wifi to connect to the network
-echo "Will you use Wifi to connect to the network? (y/n):"
-read wifi
-echo $EMPTY_LINE
-
-# Validate if answer is y or n. If not, repeat
-while [[ $wifi != "y" && $wifi != "n" ]]; do
-    echo $EMPTY_LINE
-    echo "Please enter y or n"
-    read wifi
-done
+print_question "Will you use Wifi to connect to the network? (y/n):"
+wifi=$(get_yes_or_no)
+echo
 
 # If user is going to use Wifi, ask for the SSID and password
 if [[ $wifi == "y" ]]; then
-    echo "Please enter the SSID of the network:"
+    print_question "Type the SSID of the network:"
     read ssid
-    echo $EMPTY_LINE
+    echo
 
-    echo "Please enter the password of the network:"
+    print_question "Type the password of the network:"
     read -s wifi_password
-    echo $EMPTY_LINE
+    echo
 
-    echo "Please enter the country code of the network (eg. DE, PT, ES, FR):"
+    print_question "Type the country code of the network (eg. DE, PT, ES, FR):"
     read wifi_country_code
-    echo $EMPTY_LINE
+    echo
 fi
 
 # As if user wants to introduce a custom timezone country code
-echo "Do you want to introduce a custom timezone country code? (y/n):"
-read custom_timezone
-echo $EMPTY_LINE
-
-# Validate if answer is y or n. If not, repeat
-while [[ $custom_timezone != "y" && $custom_timezone != "n" ]]; do
-    echo $EMPTY_LINE
-    echo "Please enter y or n"
-    read custom_timezone
-done
+print_question "Do you want to introduce a custom timezone country code? (y/n):"
+custom_timezone=$(get_yes_or_no)
+echo
 
 # If user wants to introduce a custom timezone country code, ask for it
 if [[ $custom_timezone == "y" ]]; then
-    echo "Please enter the timezone country code (eg. DE, PT, ES, FR):"
+    print_question "Please enter the timezone country code (eg. DE, PT, ES, FR):"
     read timezone_country_code
-    echo $EMPTY_LINE
+    echo
 
     # Convert answer to uppercase
     timezone_country_code=$(echo $timezone_country_code | tr '[:lower:]' '[:upper:]')
@@ -113,82 +129,61 @@ else
 fi
 
 # Ask if the user wants to override keyboard layout country code
-echo "Do you want to override the keyboard layout country code? (y/n):"
-read override_keyboard_layout
-echo $EMPTY_LINE
-
-# Validate if answer is y or n. If not, repeat
-while [[ $override_keyboard_layout != "y" && $override_keyboard_layout != "n" ]]; do
-    echo $EMPTY_LINE
-    echo "Please enter y or n"
-    read override_keyboard_layout
-done
+print_question "Override the keyboard layout country code? (y/n):"
+override_keyboard_layout=$(get_yes_or_no)
+echo
 
 # If user wants to override keyboard layout country code, ask for it
 if [[ $override_keyboard_layout == "y" ]]; then
-    echo "Please enter the keyboard layout country code (eg. us, de, pt, es):"
+    print_question "Type the keyboard layout country code (eg. us, de, pt, es):"
     read keyboard_layout_country_code
-    echo $EMPTY_LINE
+    echo
 else
     keyboard_layout_country_code=$DEFAULT_KEYBOARD_LAYOUT_COUNTRY_CODE
 fi
 
 # Ask if user wants to override default locale
-echo "Do you want to override the default locale? (y/n):"
-read override_locale
-echo $EMPTY_LINE
-
-# Validate if answer is y or n. If not, repeat
-while [[ $override_locale != "y" && $override_locale != "n" ]]; do
-    echo $EMPTY_LINE
-    echo "Please enter y or n"
-    read override_locale
-done
+print_question "Override the default locale? (y/n):"
+override_locale=$(get_yes_or_no)
+echo
 
 # If user wants to override default locale, ask for it
 if [[ $override_locale == "y" ]]; then
-    echo "Please enter the locale (eg. en_US, pt_PT, es_ES):"
+    print_question "Type the locale (eg. en_US, pt_PT, es_ES):"
     read locale
-    echo $EMPTY_LINE
+    echo
 else
     locale=$DEFAULT_LOCALE
 fi
 
 # Ask if user wants to override the default hostname (edgebox)
-echo "Do you want to override the default hostname (edgebox)? (y/n):"
-read override_hostname
-echo $EMPTY_LINE
-
-# Validate if answer is y or n. If not, repeat
-while [[ $override_hostname != "y" && $override_hostname != "n" ]]; do
-    echo $EMPTY_LINE
-    echo "Please enter y or n"
-    read override_hostname
-done
+print_question "Override the default hostname (edgebox)? (y/n):"
+override_hostname=$(get_yes_or_no)
+echo
 
 # If user wants to override the default hostname, ask for it
 if [[ $override_hostname == "y" ]]; then
-    echo "Please enter the desired hostname:"
+    print_question "Type desired hostname:"
     read hostname
-    echo $EMPTY_LINE
+    echo
 
 else
     hostname=$DEFAULT_HOSTNAME
 fi
 
 # Print a thank you message
-echo $EMPTY_LINE
-echo -e "${GREEN}Thank you! The installer will now start preparing the image.${NC}"
-echo $EMPTY_LINE
+echo
+print_success "Thank you! The system will now be configured..."
+echo
 
 # Download the requested release from https://github.com/FooDeas/raspberrypi-ua-netinst/releases
-echo "Downloading raspberrypi-ua-netinst..."
+print_warning "Downloading raspberrypi-ua-netinst..."
 
 # Download the release zip file, deleting a previous one if it exists, and delete the extracted folder if it exists too
 rm -r ${RASPBERRYPI_UA_NETINST_RELEASE}.zip
 curl -L -o ${RASPBERRYPI_UA_NETINST_RELEASE}.zip ${RASPBERRYPI_UA_NETINST_RELEASE_URL}
 
-echo "Extracting raspberrypi-ua-netinst..."
+print_warning "Extracting raspberrypi-ua-netinst..."
 # Extract the contents of the zip file (optional). First delete the folder if it exists
 rm -rf raspberrypi-ua-netinst-${RASPBERRYPI_UA_NETINST_RELEASE}
 unzip -d raspberrypi-ua-netinst-${RASPBERRYPI_UA_NETINST_RELEASE} ${RASPBERRYPI_UA_NETINST_RELEASE}.zip
@@ -197,11 +192,11 @@ unzip -d raspberrypi-ua-netinst-${RASPBERRYPI_UA_NETINST_RELEASE} ${RASPBERRYPI_
 rm -rf image
 mkdir image
 
-echo "Copying raspberrypi-ua-netinst files..."
+print_warning "Copying raspberrypi-ua-netinst files..."
 # Copy the contents of the extracted folder to the "image" folder
 cp -r ./raspberrypi-ua-netinst-${RASPBERRYPI_UA_NETINST_RELEASE}/* image/
 
-echo "Cleaning up..."
+print_warning "Cleaning up..."
 # Remove the zip file
 rm ${RASPBERRYPI_UA_NETINST_RELEASE}.zip
 # Remove the extracted folder
@@ -228,4 +223,4 @@ if [[ $wifi == "y" ]]; then
 fi
 
 # Print success message (in green font) and exit
-echo -e "${GREEN}Configuration complete! Copy the contents on the 'image' folder into your SD card, turn your edgebox on, and wait around 25 minutes for the installation to complete!${NC}"
+print_success "Configuration complete! Copy the contents on the 'image' folder into your SD card, turn your edgebox on, and wait around 25 minutes for the installation to complete!"
