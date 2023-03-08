@@ -163,3 +163,7 @@ reboot
 ```
 
 **Remember to backup all your data and original `installer-config.txt` before doing this!**
+
+## Troubleshooting and other info
+
+Please refer to the [raspberrypi-ua-netinst](https://github.com/edgebox-iot/raspberrypi-ua-netinst) repository, where it goes in much detail about advanced installation and troubleshooting.

@@ -5,13 +5,14 @@ DEFAULT_HOSTNAME="edgebox"
 DEFAULT_TIMEZONE_COUNTRY_CODE="DE"
 DEFAULT_KEYBOARD_LAYOUT_COUNTRY_CODE="de"
 DEFAULT_LOCALE="en_US"
-RECOMMENDED_RASPBERRYPI_UA_NETINST_RELEASE="v2.4.0_caf7423"
+RASPBERRYPI_UA_NETINST_RELEASE="v2.4.0_caf7423"
+RASPBERRYPI_UA_NETINST_RELEASE_URL="https://github.com/FooDeas/raspberrypi-ua-netinst/releases/download/v2.4.0_caf7423/raspberrypi-ua-netinst-git-caf7423.zip"
 
 # Var helpers
 EMPTY_LINE=""
 GREEN='\033[0;32m'  # Green color escape code
 NC='\033[0m'  # Reset color escape code
-USER_INSTALLER_CONFIG_LOCATION=./image/config/installer-config.txt
+USER_INSTALLER_CONFIG_LOCATION=./image/raspberrypi-ua-netinst/config/installer-config.txt
 
 # Print ASCII art using a here document
 cat << "EOF"
@@ -175,29 +176,6 @@ else
     hostname=$DEFAULT_HOSTNAME
 fi
 
-# Ask if user wants to install a specific release of raspberrypi-ua-netinst
-echo "Do you want to install a specific release of raspberrypi-ua-netinst? (y/n) [recommended: n]:"
-read specific_release
-echo $EMPTY_LINE
-
-
-# Validate if answer is y or n. If not, repeat
-while [[ $specific_release != "y" && $specific_release != "n" ]]; do
-    echo $EMPTY_LINE
-    echo "Please enter y or n"
-    read specific_release
-done
-
-# If user wants to install a specific release of raspberrypi-ua-netinst, ask for it
-if [[ $specific_release == "y" ]]; then
-    echo "Please enter the release tag (eg. v2.4.0):"
-    read release_tag
-    echo $EMPTY_LINE
-
-else
-    release_tag=$RECOMMENDED_RASPBERRYPI_UA_NETINST_RELEASE
-fi
-
 # Print a thank you message
 echo $EMPTY_LINE
 echo -e "${GREEN}Thank you! The installer will now start preparing the image.${NC}"
@@ -205,16 +183,15 @@ echo $EMPTY_LINE
 
 # Download the requested release from https://github.com/FooDeas/raspberrypi-ua-netinst/releases
 echo "Downloading raspberrypi-ua-netinst..."
-zip_url="https://github.com/FooDeas/raspberrypi-ua-netinst/archive/${release_tag}.zip"
 
 # Download the release zip file, deleting a previous one if it exists, and delete the extracted folder if it exists too
-rm -r ${release_tag}.zip
-curl -L -o ${release_tag}.zip ${zip_url}
+rm -r ${RASPBERRYPI_UA_NETINST_RELEASE}.zip
+curl -L -o ${RASPBERRYPI_UA_NETINST_RELEASE}.zip ${RASPBERRYPI_UA_NETINST_RELEASE_URL}
 
 echo "Extracting raspberrypi-ua-netinst..."
 # Extract the contents of the zip file (optional). First delete the folder if it exists
-rm -rf raspberrypi-ua-netinst-${release_tag}
-unzip ${release_tag}.zip
+rm -rf raspberrypi-ua-netinst-${RASPBERRYPI_UA_NETINST_RELEASE}
+unzip -d raspberrypi-ua-netinst-${RASPBERRYPI_UA_NETINST_RELEASE} ${RASPBERRYPI_UA_NETINST_RELEASE}.zip
 
 # Delete image folder and recreate it
 rm -rf image
@@ -222,18 +199,16 @@ mkdir image
 
 echo "Copying raspberrypi-ua-netinst files..."
 # Copy the contents of the extracted folder to the "image" folder
-# Note, release tag "v" char is not included in the folder name
-extracted_release_tag=${release_tag:1}
-cp -r ./raspberrypi-ua-netinst-${extracted_release_tag}/* image/
+cp -r ./raspberrypi-ua-netinst-${RASPBERRYPI_UA_NETINST_RELEASE}/* image/
 
 echo "Cleaning up..."
 # Remove the zip file
-rm ${release_tag}.zip
+rm ${RASPBERRYPI_UA_NETINST_RELEASE}.zip
 # Remove the extracted folder
-rm -rf ./raspberrypi-ua-netinst-${extracted_release_tag}/
+rm -rf ./raspberrypi-ua-netinst-${RASPBERRYPI_UA_NETINST_RELEASE}/
 
 # Copy the contents of the "config" folder to the "image/raspberrypi-ua-netinst/config/" folder
-cp -r ./config/* ./image/config/
+cp -r ./config/* ./image/raspberrypi-ua-netinst/config/
 
 # Append the introduced user settings to installer-config.txt
 echo "rootpw=${root_password}" >> $USER_INSTALLER_CONFIG_LOCATION
