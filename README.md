@@ -121,8 +121,8 @@ The recommendation is that after installation, you should run the setup script. 
 
 The available commands are:
 
- - edgebox -s | --setup -> Setup script, configures GitHub SSH Key (if it exists), and downloads all repositories and starts all components. Project files are available at `~/home/system/components` >
- - edgebox -u | --update -> Pulls all newest commits form every repository in the project.
+- `edgebox -s | --setup` -> Setup script, configures GitHub SSH Key (if it exists), and downloads all repositories and starts all components. Project files are available at `~/home/system/components` >
+- `edgebox -u | --update` -> Pulls all newest commits form every repository in the project.
 
 ## GitHub Key Setup
 
