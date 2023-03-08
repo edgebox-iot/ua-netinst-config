@@ -248,7 +248,7 @@ echo "root_ssh_pwlogin=${root_ssh}" >> $USER_INSTALLER_CONFIG_LOCATION
 if [[ $wifi == "y" ]]; then
     echo "ifname=wlan0" >> $USER_INSTALLER_CONFIG_LOCATION
     echo "wlan_country=${wifi_country_code}" >> $USER_INSTALLER_CONFIG_LOCATION
-    echo "wlan_ssid=${ssid}" >> $USER_INSTALLER_CONFIG_LOCATION
+    echo "wlan_ssid='${ssid}'" >> $USER_INSTALLER_CONFIG_LOCATION
     echo "wlan_psk=${wifi_password}" >> $USER_INSTALLER_CONFIG_LOCATION
 fi
 
