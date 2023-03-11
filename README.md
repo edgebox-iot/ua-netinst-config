@@ -53,7 +53,7 @@ This is the configuration directory of the installer.
 
 The primary way to customize the installation process is done through the file `config/installer-config.txt`.
 
-If you want settings changed for your installation, you should **only** place that changed setting in the `image/installer-config.txt` file, after running the `make install` command. So for example if you want to have vim and aptitude installed by default, edit the file with the following contents:
+If you want settings changed for your installation, you should **only** place that changed setting in the `image/raspberrypi-ua-netinst/config/installer-config.txt` file, after running the `make install` command. So for example if you want to have vim and aptitude installed by default, edit the file with the following contents:
 
 ```
 packages=vim,aptitude
@@ -101,10 +101,10 @@ If you have a serial cable connected, installer output can be followed there, to
 
 ## First boot
 
-The system is almost completely unconfigured on first boot. Here are some tasks you most definitely want to do on first boot.  
+The system is almost completely configured on first boot. But here are some tasks you might want to do on first boot.  
 Note, that this manual work can be done automatically during the installation process if the appropriate options in [`installer-config.txt`](#installer-customization)) are set.
 
-Some sane defaults for Edgebox product development are pre-set via the installation script, but you might want to tweak some of the parameters even after installing.
+If you want to tweak some of the configuration, even after installation, you can run the following commands.
 
 - Configure your default locale: `dpkg-reconfigure locales`
 - Configure your keyboard layout: `dpkg-reconfigure keyboard-configuration`
@@ -115,9 +115,9 @@ Create a swap file with `dd if=/dev/zero of=/swap bs=1M count=512 && chmod 600 /
 
 ## The edgebox setup script
 
-Included after installation in `~/home/system/` is a basg script with the name `edgebox.sh`. This script can be ran after installation to setup the necessary components for a proper functioning Edgebox. It can be run anywhere in a terminal as it is pre-included in the PATH.
+Included after installation in `~/home/system/` is a bash script with the name `edgebox.sh`. This script can be ran after installation to setup the necessary components for a proper functioning Edgebox. It can be run anywhere in a terminal as it is pre-included in the PATH.
 
-The recommendation is that after installation, you should run the setup script. The system is SSH accessible through `ssh system@edgebox`, using the password set on the `installer-config.txt` file.
+The recommendation is that after installation, you should run the setup script. The system is SSH accessible through `ssh system@edgebox.local`, using the password set on the `installer-config.txt` file.
 
 The available commands are:
 
