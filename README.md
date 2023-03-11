@@ -138,7 +138,7 @@ To learn how to properly generate a GitHub SSH key for using here, please refer 
 - Create the file ssh.list in ~/[THIS REPO PATH]/files/
 - Insert in the ssh.list file, the following 2 lines:
 
-```
+```bash
 system:system 755 /home/system/.ssh/github_key
 system:system 755 /home/system/.ssh/github_key.pub
 ```
