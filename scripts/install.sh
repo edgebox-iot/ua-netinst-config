@@ -1,5 +1,5 @@
 #!/bin/bash
-
+set -euo pipefail
 cat << "EOF"
                                                      
 ,------.   ,--.              ,--.                    
@@ -112,13 +112,13 @@ if [[ $wifi == "y" ]]; then
 fi
 
 # As if user wants to introduce a custom timezone country code
-print_question "Do you want to introduce a custom timezone country code? (y/n):"
+print_question "Override the default timezone country code \"$DEFAULT_TIMEZONE_COUNTRY_CODE\"? (y/n):"
 custom_timezone=$(get_yes_or_no)
 echo
 
 # If user wants to introduce a custom timezone country code, ask for it
 if [[ $custom_timezone == "y" ]]; then
-    print_question "Please enter the timezone country code (eg. DE, PT, ES, FR):"
+    print_question "Type the timezone country code (eg. DE, PT, ES, FR):"
     read timezone_country_code
     echo
 
@@ -129,7 +129,7 @@ else
 fi
 
 # Ask if the user wants to override keyboard layout country code
-print_question "Override the keyboard layout country code? (y/n):"
+print_question "Override the default keyboard layout country code \"$DEFAULT_KEYBOARD_LAYOUT_COUNTRY_CODE\"? (y/n) :"
 override_keyboard_layout=$(get_yes_or_no)
 echo
 
@@ -143,7 +143,7 @@ else
 fi
 
 # Ask if user wants to override default locale
-print_question "Override the default locale? (y/n):"
+print_question "Override the default locale \"$DEFAULT_LOCALE\"? (y/n):"
 override_locale=$(get_yes_or_no)
 echo
 
@@ -157,13 +157,13 @@ else
 fi
 
 # Ask if user wants to override the default hostname (edgebox)
-print_question "Override the default hostname (edgebox)? (y/n):"
+print_question "Override the default hostname ($DEFAULT_HOSTNAME)? (y/n):"
 override_hostname=$(get_yes_or_no)
 echo
 
 # If user wants to override the default hostname, ask for it
 if [[ $override_hostname == "y" ]]; then
-    print_question "Type desired hostname:"
+    print_question "Type the desired hostname:"
     read hostname
     echo
 
@@ -180,7 +180,7 @@ echo
 print_warning "Downloading raspberrypi-ua-netinst..."
 
 # Download the release zip file, deleting a previous one if it exists, and delete the extracted folder if it exists too
-rm -r ${RASPBERRYPI_UA_NETINST_RELEASE}.zip
+rm -rf ${RASPBERRYPI_UA_NETINST_RELEASE}.zip
 curl -L -o ${RASPBERRYPI_UA_NETINST_RELEASE}.zip ${RASPBERRYPI_UA_NETINST_RELEASE_URL}
 
 print_warning "Extracting raspberrypi-ua-netinst..."
