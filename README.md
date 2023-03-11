@@ -55,14 +55,15 @@ The primary way to customize the installation process is done through the file `
 
 If you want settings changed for your installation, you should **only** place that changed setting in the `image/raspberrypi-ua-netinst/config/installer-config.txt` file, after running the `make install` command. So for example if you want to have vim and aptitude installed by default, edit the file with the following contents:
 
-```
+```bash
 packages=vim,aptitude
 ```
+
 That's it!
 
 Here is another example for a _installer-config.txt_ file:
 
-```
+```bash
 packages=nano
 firmware_packages=1
 
