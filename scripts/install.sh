@@ -157,7 +157,7 @@ else
 fi
 
 # Ask if user wants to override the default hostname (edgebox)
-print_question "Override the default hostname ($DEFAULT_HOSTNAME)? (y/n):"
+print_question "Override the default hostname \"$DEFAULT_HOSTNAME\"? (y/n):"
 override_hostname=$(get_yes_or_no)
 echo
 

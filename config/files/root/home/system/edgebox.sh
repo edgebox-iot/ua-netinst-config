@@ -26,6 +26,18 @@ Options:
 EOF
     exit 1
 }
+
+install_edgeboxctl(){
+    echo ""
+    echo "--> Installing edgeboxctl"
+    echo ""
+    cd /home/system/components/
+    cd edgeboxctl && make build-prod && cd ..
+    cp ./edgeboxctl/edgeboxctl.service /lib/systemd/system/edgeboxctl.service
+    cp ./edgeboxctl/bin/edgeboxctl /usr/local/sbin/edgeboxctl
+    sudo systemctl daemon-reload
+}
+
 foo=""
 bar=""
 setup=0
@@ -45,6 +57,8 @@ while [ $# -gt 0 ] ; do
         echo "----> Updating edgeboxctl"
         git pull
         cd ../ws
+        sudo systemctl stop edgeboxctl
+        install_edgeboxctl
         echo "----> Updating WS"
         git pull
         cd ../api
@@ -93,6 +107,7 @@ while [ $# -gt 0 ] ; do
         sudo tar -C /usr/local -xzf $GOLANG
         rm $GOLANG
         unset GOLANG
+        source /home/system/.profile
         echo "" >> /home/system/.profile
         echo "export PATH=\$PATH:/usr/local/go/bin" >> /home/system/.profile
         echo ""
@@ -106,7 +121,7 @@ while [ $# -gt 0 ] ; do
             git clone git@github.com:edgebox-iot/edgeboxctl.git
         else
             git clone https://github.com/edgebox-iot/edgeboxctl.git
-	fi
+	    fi
         echo ""
         echo "----> Settting up edgebox-iot/ws"
         echo ""
@@ -122,14 +137,14 @@ while [ $# -gt 0 ] ; do
             git clone git@github.com:edgebox-iot/api.git
         else
             git clone https://github.com/edgebox-iot/api.git
-	fi
-        echo ""
-	echo "----> Setting up edgebox-iot/apps"
-	if [ $key_found != 0 ]; then
-	    git clone git@github.com:edgebox-iot/apps.git
-	else
-	    git clone https://github.com/edgebox-iot/apps.git
-	fi
+        fi
+            echo ""
+        echo "----> Setting up edgebox-iot/apps"
+        if [ $key_found != 0 ]; then
+            git clone git@github.com:edgebox-iot/apps.git
+        else
+            git clone https://github.com/edgebox-iot/apps.git
+        fi
         echo ""
         echo "----> Building Reverse Proxy and Service Containers Configs"
         echo ""
@@ -143,16 +158,17 @@ while [ $# -gt 0 ] ; do
         echo "----> Starting Revere Proxy and Service Containers"
         echo ""
         ./ws -s
-	echo ""
-	echo "----> Starting Edgeboxctl"
-	sudo systemctl enable edgeboxctl
-	sudo systemctl start edgeboxctl
+        install_edgeboxctl
         echo ""
-        echo "---------------------------"
-        echo "| Edgebox Setup Finished  |"
-        echo "---------------------------"
-        echo ""
-        ;;
+        echo "----> Starting Edgeboxctl"
+        sudo systemctl enable edgeboxctl
+        sudo systemctl start edgeboxctl
+            echo ""
+            echo "---------------------------"
+            echo "| Edgebox Setup Finished  |"
+            echo "---------------------------"
+            echo ""
+            ;;
     -o|--output)
         output="$2"
         shift
