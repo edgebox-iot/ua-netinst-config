@@ -34,7 +34,7 @@ install_edgeboxctl(){
     cd /home/system/components/
     cd edgeboxctl && make build-prod && cd ..
     cp ./edgeboxctl/edgeboxctl.service /lib/systemd/system/edgeboxctl.service
-    cp ./edgeboxctl/bin/edgeboxctl /usr/local/sbin/edgeboxctl
+    sudo cp ./edgeboxctl/bin/edgeboxctl /usr/local/sbin/edgeboxctl
     sudo systemctl daemon-reload
 }
 
@@ -55,22 +55,22 @@ while [ $# -gt 0 ] ; do
         cd /home/system/components/
         cd edgeboxctl
         echo "----> Updating edgeboxctl"
-        git pull
-        cd ../ws
+	cd /home/system/components/
+	cd edgeboxctl
+	git pull
         sudo systemctl stop edgeboxctl
-        install_edgeboxctl
+	install_edgeboxctl
         echo "----> Updating WS"
-        git pull
+        cd /home/system/components/
+	cd ws
+	git pull
         cd ../api
         echo "----> Updating API"
         git pull
-        cd ../assets
-        echo "----> Updating Assets"
-        git pull
-        cd /home/system
-        echo "----> Restarting Services"
-        cd ws
-        docker-compose restart
+        echo "----> Building and Restarting Services"
+        cd /home/system/components/
+	cd ws
+  	./ws -b
         ;;
     -s|--setup)
         setup=1
@@ -107,7 +107,6 @@ while [ $# -gt 0 ] ; do
         sudo tar -C /usr/local -xzf $GOLANG
         rm $GOLANG
         unset GOLANG
-        source /home/system/.profile
         echo "" >> /home/system/.profile
         echo "export PATH=\$PATH:/usr/local/go/bin" >> /home/system/.profile
         echo ""
