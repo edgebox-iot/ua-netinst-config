@@ -55,22 +55,22 @@ while [ $# -gt 0 ] ; do
         cd /home/system/components/
         cd edgeboxctl
         echo "----> Updating edgeboxctl"
-	cd /home/system/components/
-	cd edgeboxctl
-	git pull
+        cd /home/system/components/
+        cd edgeboxctl
+        git pull
         sudo systemctl stop edgeboxctl
-	install_edgeboxctl
+	    install_edgeboxctl
         echo "----> Updating WS"
         cd /home/system/components/
-	cd ws
-	git pull
+        cd ws
+        git pull
         cd ../api
         echo "----> Updating API"
         git pull
         echo "----> Building and Restarting Services"
         cd /home/system/components/
-	cd ws
-  	./ws -b
+        cd ws
+        ./ws -b
         ;;
     -s|--setup)
         setup=1
@@ -162,12 +162,12 @@ while [ $# -gt 0 ] ; do
         echo "----> Starting Edgeboxctl"
         sudo systemctl enable edgeboxctl
         sudo systemctl start edgeboxctl
-            echo ""
-            echo "---------------------------"
-            echo "| Edgebox Setup Finished  |"
-            echo "---------------------------"
-            echo ""
-            ;;
+        echo ""
+        echo "---------------------------"
+        echo "| Edgebox Setup Finished  |"
+        echo "---------------------------"
+        echo ""
+        ;;
     -o|--output)
         output="$2"
         shift
