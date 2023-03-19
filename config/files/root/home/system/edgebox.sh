@@ -87,13 +87,13 @@ while [ $# -gt 0 ] ; do
         key_name="github_key"
         pubkey_name="github_key.pub"
         key_found=0
-        for f in ~/.ssh/ ; do
+        for f in home/system/.ssh/ ; do
             FILE="$key_name"
             if test -f "$FILE"; then
                 key_found=1
-                echo "Setting up GitHub SSH key in ~/.ssh/$FILE"
+                echo "Setting up GitHub SSH key in home/system/.ssh/$FILE"
                 eval "$(ssh-agent -s)"
-                ssh-add ~/.ssh/github_key
+                ssh-add home/system/.ssh/github_key
             fi
         done
         echo ""
@@ -108,6 +108,23 @@ while [ $# -gt 0 ] ; do
         echo ""
         sudo pip3 -v install docker-compose
         echo ""
+        echo ""
+        echo "----> Settting up edgebox-iot/ws"
+        echo ""
+        mkdir /home/system/components
+        git config --global credential.helper cache # Set git to use the credential memory cache
+        git config --global credential.helper 'cache --timeout=3600' # Set the cache to timeout after 1 hour (setting is in seconds)
+        cd /home/system/components
+        if [ $key_found != 0 ]; then
+            git clone git@github.com:edgebox-iot/ws.git
+        else
+            git clone https://github.com/edgebox-iot/ws.git
+        fi
+        chmod 757 ws
+        mkdir appdata
+        touch /home/system/components/ws/assets/.install
+        sudo chmod -R 777 appdata/
+        ./ws -b
         echo "----> Installing yq:"
         echo ""
         sudo pip3 -v install yq
@@ -123,23 +140,11 @@ while [ $# -gt 0 ] ; do
         echo ""
         echo "----> Setting up edgebox-iot/edgeboxctl"
         echo ""
-        mkdir /home/system/components
-        git config --global credential.helper cache # Set git to use the credential memory cache
-        git config --global credential.helper 'cache --timeout=3600' # Set the cache to timeout after 1 hour (setting is in seconds)
-        cd /home/system/components
         if [ $key_found != 0 ]; then
             git clone git@github.com:edgebox-iot/edgeboxctl.git
         else
             git clone https://github.com/edgebox-iot/edgeboxctl.git
 	    fi
-        echo ""
-        echo "----> Settting up edgebox-iot/ws"
-        echo ""
-        if [ $key_found != 0 ]; then
-            git clone git@github.com:edgebox-iot/ws.git
-        else
-            git clone https://github.com/edgebox-iot/ws.git
-        fi
         echo ""
         echo "----> Settting up edgebox-iot/api"
         echo ""
@@ -159,20 +164,16 @@ while [ $# -gt 0 ] ; do
         echo "----> Building Reverse Proxy and Service Containers Configs"
         echo ""
         cd ws
-        # docker-compose up -d
-        chmod 757 ws
-        mkdir appdata
-        sudo chmod -R 777 appdata/
         ./ws -b
         echo ""
-        echo "----> Starting Revere Proxy and Service Containers"
+        echo "----> Installing edgeboxctl"
         echo ""
-        ./ws -s
         install_edgeboxctl
         echo ""
         echo "----> Starting Edgeboxctl"
         sudo systemctl enable edgeboxctl
         sudo systemctl start edgeboxctl
+        rm /home/system/components/ws/assets/.install
         echo ""
         echo "---------------------------"
         echo "| Edgebox Setup Finished  |"
