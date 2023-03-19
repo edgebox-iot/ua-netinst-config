@@ -122,7 +122,7 @@ while [ $# -gt 0 ] ; do
         fi
         chmod 757 ws
         mkdir appdata
-        touch /home/system/components/ws/assets/.install
+        touch /home/system/components/ws/assets/installing.html
         sudo chmod -R 777 appdata/
         ./ws -b
         echo "----> Installing yq:"
@@ -173,7 +173,7 @@ while [ $# -gt 0 ] ; do
         echo "----> Starting Edgeboxctl"
         sudo systemctl enable edgeboxctl
         sudo systemctl start edgeboxctl
-        rm /home/system/components/ws/assets/.install
+        rm /home/system/components/ws/assets/installing.html
         echo ""
         echo "---------------------------"
         echo "| Edgebox Setup Finished  |"
