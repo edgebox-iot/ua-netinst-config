@@ -38,6 +38,15 @@ install_edgeboxctl(){
     sudo systemctl daemon-reload
 }
 
+install_cloudflared() {
+    echo ""
+    echo "--> Installing cloudflared"
+    echo ""
+    wget -q https://github.com/cloudflare/cloudflared/releases/download/2023.3.1/cloudflared-linux-arm.deb
+    dpkg -i cloudflared-linux-arm.deb
+}
+
+
 install_buster_backports() {
     echo ""
     echo "--> Installing buster-backports and libseccomp2"
@@ -169,6 +178,7 @@ while [ $# -gt 0 ] ; do
         echo "----> Installing edgeboxctl"
         echo ""
         install_edgeboxctl
+        install_cloudflared
         echo ""
         echo "----> Starting Edgeboxctl"
         sudo systemctl enable edgeboxctl
