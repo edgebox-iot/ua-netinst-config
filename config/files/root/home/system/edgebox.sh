@@ -42,8 +42,8 @@ install_cloudflared() {
     echo ""
     echo "--> Installing cloudflared"
     echo ""
-    wget -q https://github.com/cloudflare/cloudflared/releases/download/2023.3.1/cloudflared-linux-arm.deb
-    sudo dpkg -i cloudflared-linux-arm.deb
+    wget -q https://github.com/cloudflare/cloudflared/releases/download/2023.3.1/cloudflared-linux-armhf.deb
+    sudo dpkg -i cloudflared-linux-armhf.deb
 }
 
 
@@ -97,6 +97,7 @@ while [ $# -gt 0 ] ; do
             echo "File exists! Skipping Components Installation"
         else
             echo "File does not exist. Installing component dependencies"
+            sleep 60
             key_name="github_key"
             pubkey_name="github_key.pub"
             key_found=0
