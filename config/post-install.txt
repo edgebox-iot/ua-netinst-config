@@ -2,20 +2,4 @@ echo "-> EdgeboxOS Components"
 mv /rootfs/home/system/.edgebox_motd /rootfs/etc/motd
 mv /rootfs/home/system/edgebox.sh /rootfs/usr/local/bin/edgebox
 mv /rootfs/home/system/edgeboxctl /rootfs/usr/local/bin/edgeboxctl
-
-echo "-> Preparing to execute as system user
-sed -i '/auth sufficient pam_rootok.so/a\auth [success=ignore default=1] pam_succeed_if.so user = system' /etc/pam.d/su
-
-# Safely execute a command as an other user, via su
-#
-#  $1 -> username
-#  $2 -> program to run
-#  $3 .. n -> arguments
-function execAs() {
-    user="$1"; shift
-    cmd="$1"; shift
-    su "$user" -s "$(which -- "$cmd")" -- "$@"
-}
-
-echo "-> Running Edgebox Components Installation
-execAs system edgebox -s
+ln -s rootfs/usr/lib/systemd/system/edgeboxsetup.service rootfs/etc/systemd/system/multi-user.target.wants/edgeboxsetup.service

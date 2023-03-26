@@ -1,5 +1,5 @@
 [Unit]
-Description=Edgebox Control Module Service
+Description=Edgebox Dependencies Installation
 ConditionPathExists=/home/system/
 After=network.target
  
@@ -9,21 +9,21 @@ User=root
 Group=root
 LimitNOFILE=1024
 
-Restart=on-failure
+Restart=no
 RestartSec=10
 StartLimitIntervalSec=60
 
 WorkingDirectory=/home/system/
-ExecStart=edgeboxctl --name=edgebox
+ExecStart=edgebox -s
 
 # make sure log directory exists and owned by syslog
 PermissionsStartOnly=true
-ExecStartPre=/bin/mkdir -p /var/log/edgeboxctl
-ExecStartPre=/bin/chown root:root /var/log/edgeboxctl
-ExecStartPre=/bin/chmod 755 /var/log/edgeboxctl
+ExecStartPre=/bin/mkdir -p /var/log/edgeboxsetup
+ExecStartPre=/bin/chown root:root /var/log/edgeboxsetup
+ExecStartPre=/bin/chmod 755 /var/log/edgeboxsetup
 StandardOutput=syslog
 StandardError=syslog
-SyslogIdentifier=edgeboxctl
+SyslogIdentifier=edgeboxsetup
  
 [Install]
 WantedBy=multi-user.target
