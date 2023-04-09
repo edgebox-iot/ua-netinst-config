@@ -140,6 +140,8 @@ while [ $# -gt 0 ] ; do
             touch /home/system/components/ws/assets/installing.html
             sudo chmod -R 777 appdata/
             ./ws -b
+            modprobe ledtrig_heartbeat
+            echo heartbeat >/sys/class/leds/led0/trigger
             cd ..
             echo "----> Installing yq:"
             echo ""
@@ -193,6 +195,7 @@ while [ $# -gt 0 ] ; do
             sudo systemctl start edgeboxctl
             rm /home/system/components/ws/assets/installing.html
             touch /home/system/components/.installed
+            echo mmc0 >/sys/class/leds/led0/trigger
             echo ""
             echo "---------------------------"
             echo "| Edgebox Setup Finished  |"
