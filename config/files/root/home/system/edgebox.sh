@@ -96,20 +96,8 @@ while [ $# -gt 0 ] ; do
         if [ -e /home/system/components/.installed ]; then
             echo "File exists! Skipping Components Installation"
         else
-            echo "File does not exist. Installing component dependencies"
-            sleep 60
-            key_name="github_key"
-            pubkey_name="github_key.pub"
-            key_found=0
-            for f in home/system/.ssh/ ; do
-                FILE="$key_name"
-                if test -f "$FILE"; then
-                    key_found=1
-                    echo "Setting up GitHub SSH key in home/system/.ssh/$FILE"
-                    eval "$(ssh-agent -s)"
-                    ssh-add home/system/.ssh/github_key
-                fi
-            done
+            echo "File does not exist. Sleeping 60 seconds and Installing component dependencies"
+            sleep 60 # Give some time to the debian fresh install to settle
             echo ""
             echo "--> Initializing Edgebox Setup Script"
             echo ""
@@ -120,23 +108,20 @@ while [ $# -gt 0 ] ; do
             echo ""
             echo "----> Installing Docker Compose:"
             echo ""
-            sudo pip3 -v install docker-compose
-            echo ""
+	    sudo curl -L "https://github.com/docker/compose/releases/download/v2.18.1/docker-compose-linux-armv7" -o /usr/bin/docker-compose
+	    sudo chmod +x /usr/bin/docker-compose 
+	    echo ""
             echo ""
             echo "----> Settting up edgebox-iot/ws"
             echo ""
-            mkdir /home/system/components
+            mkdir /home/system/components 2>/dev/null || true
             git config --global credential.helper cache # Set git to use the credential memory cache
             git config --global credential.helper 'cache --timeout=3600' # Set the cache to timeout after 1 hour (setting is in seconds)
             cd /home/system/components
-            if [ $key_found != 0 ]; then
-                git clone git@github.com:edgebox-iot/ws.git
-            else
-                git clone https://github.com/edgebox-iot/ws.git
-            fi
+            git clone https://github.com/edgebox-iot/ws.git || true
             chmod 757 ws
             cd ws
-            mkdir appdata
+            mkdir appdata || true
             touch /home/system/components/ws/assets/installing.html
             sudo chmod -R 777 appdata/
             ./ws -b
@@ -159,26 +144,14 @@ while [ $# -gt 0 ] ; do
             echo ""
             echo "----> Setting up edgebox-iot/edgeboxctl"
             echo ""
-            if [ $key_found != 0 ]; then
-                git clone git@github.com:edgebox-iot/edgeboxctl.git
-            else
-                git clone https://github.com/edgebox-iot/edgeboxctl.git
-            fi
+            git clone https://github.com/edgebox-iot/edgeboxctl.git || true
             echo ""
             echo "----> Settting up edgebox-iot/api"
             echo ""
-            if [ $key_found != 0 ]; then
-                git clone git@github.com:edgebox-iot/api.git
-            else
-                git clone https://github.com/edgebox-iot/api.git
-            fi
-                echo ""
+            git clone https://github.com/edgebox-iot/api.git || true
+            echo ""
             echo "----> Setting up edgebox-iot/apps"
-            if [ $key_found != 0 ]; then
-                git clone git@github.com:edgebox-iot/apps.git
-            else
-                git clone https://github.com/edgebox-iot/apps.git
-            fi
+            git clone https://github.com/edgebox-iot/apps.git || true
             echo ""
             echo "----> Building Reverse Proxy and Service Containers Configs"
             echo ""
