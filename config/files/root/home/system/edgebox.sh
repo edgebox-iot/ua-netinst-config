@@ -38,6 +38,16 @@ install_edgeboxctl(){
     sudo systemctl daemon-reload
 }
 
+install_logger(){
+    echo ""
+    echo "--> Installing logger"
+    echo ""
+    cd /home/system/components/
+    cd logger && make install && cd ..
+    sudo systemctl daemon-reload
+    systemctl enable logger
+}
+
 install_cloudflared() {
     echo ""
     echo "--> Installing cloudflared"
@@ -85,6 +95,9 @@ while [ $# -gt 0 ] ; do
         git pull
         cd ../api
         echo "----> Updating API"
+        git pull
+        cd ../logger
+        echo "----> Updating Logger"
         git pull
         echo "----> Building and Restarting Services"
         cd /home/system/components/
@@ -153,6 +166,9 @@ while [ $# -gt 0 ] ; do
             echo "----> Setting up edgebox-iot/apps"
             git clone https://github.com/edgebox-iot/apps.git || true
             echo ""
+            echo "----> Setting up edgebox-iot/logger"
+            git clone https://github.com/edgebox-iot/logger.git || true
+            echo ""
             echo "----> Building Reverse Proxy and Service Containers Configs"
             echo ""
             cd ws
@@ -162,6 +178,7 @@ while [ $# -gt 0 ] ; do
             echo ""
             install_edgeboxctl
             install_cloudflared
+            install_logger
             echo ""
             echo "----> Starting Edgeboxctl"
             sudo systemctl enable edgeboxctl
